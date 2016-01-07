@@ -37,40 +37,52 @@ def process(raw_data):
 
 	return data
 
-def predict(data, vect, user_list, word_counts, sn): 
+def predict(data, vect, user_list, tweet_list, word_counts, sn): 
 	vector = vect.transform(data)
 	result_matrix = linear_kernel(vector, word_counts)
 	
-	tweet_list = []
+	indices_of_tweets = []
+	tweet_array = np.array(tweet_list)
+	user_array = np.array(user_list)
 
 	# For each tweet by the client, find the 30 most similar tweets
 	# This list may include tweets by the client
 	for row in result_matrix: 
-		indices = row.argsort()[-51:-1][::-1]
-		tweet_list.append(indices)
+		indices = row.argsort()[-32:-2][::-1]
+		indices_of_tweets.append(indices)
 
-	# Find the 50 tweets that showed up the most number of times in the tweet list
-	# Now you have a list of the tweets that showed up the most number of times as 
-	# being similar to your other tweets
-	tweet_indexes = Counter([idx for sublist in tweet_list for idx in sublist])
+	
+	tweets = tweet_array[indices_of_tweets]
 
-	print tweet_indexes.most_common(50)
+	print zip(data, tweets)
 
-	top_indexes = [tup[0] for tup in tweet_indexes.most_common(50)]
 
-	#find the users that wrote the tweets 
-	user_array = np.array(user_list)
+	# # Return the person that tweeted each of the 50 most similar tweets
+	# persons_per_tweet = []
 
-	people = user_array[top_indexes]
+	# for row in indices_of_tweets: 
+	# 	persons_per_tweet.append(user_array[row])
 
-	print people
+	# print persons_per_tweet
 
-	# remove for duplicate people
-	unique_people = set(people)
+	# # Count up how many times each person shows up. 
+	# # Same weighting is given to people who have many tweets similar to one client tweet
+	# # and a tweet that matches a high number of client tweets.
+	# persons_counter = Counter()
 
-	print unique_people
+	# for row in persons_per_tweet: 
+	# 	persons_counter.update(row)
 
-	return [x for x in unique_people if x != sn]
+	# print persons_counter
+
+	# # return the top 25 people in this list
+	# top_people_and_count = persons_counter.most_common(25)
+
+	# print top_people_and_count
+
+	# top_people = [tup[0] for tup in top_people_and_count]
+
+	# return top_people
 
 if __name__ == '__main__':
 	sn = raw_input("Please enter a twitter handle: ")
@@ -78,10 +90,11 @@ if __name__ == '__main__':
 	data = process(raw_data)
 	with open('data/tweetdoc_user_list.pkl') as f: 
 		user_list = pickle.load(f)
+	with open('data/tweetdoc_tweet_list.pkl') as f: 
+		tweet_list = pickle.load(f)
 	with open('data/tweetdoc_vectorizer.pkl') as f: 
 		vect = pickle.load(f)
 	with open('data/tweetdoc_word_counts.pkl') as f: 
 		word_counts = pickle.load(f)
-	output = predict(data, vect, user_list, word_counts, sn)
-	print output
-	
+	output = predict(data, vect, user_list, tweet_list, word_counts, sn)
+	#print output

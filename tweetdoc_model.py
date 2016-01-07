@@ -27,31 +27,6 @@ class Tweetdoc(object):
 		tweetdoc.insert(text_and_id)
 
 
-	# def data_to_docs(self):
-	# 	''' Turns data into a usable format for the TfidfVectorizer 
-		
-	# 	INPUT: MongoDB data with 1 Mongo Document per tweet
-	# 	OUTPUT: Updates self.dict with OrderedDict in useable format
-	# 	'''
-
-	# 	client = MongoClient()
-	# 	processed_data = client['processed_data']
-	# 	tweetdoc = processed_data['tweetdoc']
-
-	# 	docs = tweetdoc.find({})
-	# 	doc_dict = OrderedDict()
-
-	# 	for doc in docs:
-	# 		tweet = doc.get('text').encode('utf8', 'ignore')
-	# 		user = doc.get('user').get('screen_name')
-	# 		if user in doc_dict: 
-	# 			doc_dict[user] += tweet
-	# 		else: 
-	# 			doc_dict[user] = tweet
-
-	# 	self.dict = doc_dict
-
-
 	def tfidf(self): 
 		client = MongoClient()
 		processed_data = client['processed_data']
@@ -85,6 +60,8 @@ if __name__ == '__main__':
 	model.tfidf()
 	with open('data/tweetdoc_user_list.pkl', 'w') as f: 
 		pickle.dump(model.user_list, f)
+	with open('data/tweetdoc_tweet_list.pkl', 'w') as f: 
+		pickle.dump(model.tweet_list, f)
 	with open('data/tweetdoc_vectorizer.pkl', 'w') as f: 
 		pickle.dump(model.vect, f)
 	with open('data/tweetdoc_word_counts.pkl', 'w') as f: 
