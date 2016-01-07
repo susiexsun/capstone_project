@@ -10,7 +10,7 @@ class Model1(object):
 		self.dict = None
 		self.vect = None
 		self.word_counts = None
-		self.matrix = None
+		self.list_of_tweets = None
 
 	def create_conn_and_database(self): 
 		''' Connects to MongoDB database and pulls data for model. 
@@ -29,8 +29,11 @@ class Model1(object):
 
 	def data_to_docs(self):
 		''' Turns data into a usable format for the TfidfVectorizer 
+		
 		INPUT: MongoDB data with 1 Mongo Document per tweet
-		OUTPUT: Updates self.dict with OrderedDict in useable format
+		
+		OUTPUT: Updates self.dict with OrderedDict. OrderedDict has 1 
+		key per person, and the text is 1 long string with all of the tweets.
 		'''
 
 		client = MongoClient()
@@ -44,25 +47,29 @@ class Model1(object):
 			tweet = doc.get('text').encode('utf8', 'ignore')
 			user = doc.get('user').get('screen_name')
 			if user in doc_dict: 
-				doc_dict[user] += tweet
+				doc_dict[user] += " " + tweet
 			else: 
 				doc_dict[user] = tweet
+
+		print doc_dict.items()[1]
 
 		self.dict = doc_dict
 
 
 	def tfidf(self): 
-		matrix = []
+		list_of_tweets = []
 
 		for k, v in self.dict.iteritems(): 
-			matrix.append(v)
+			list_of_tweets.append(v)
 
-		vect = TfidfVectorizer(ngram_range=(1, 2), max_features=10000)
-		word_counts = vect.fit_transform(np.array(matrix))
+		vect = TfidfVectorizer()
+		word_counts = vect.fit_transform(list_of_tweets)
 
-		self.matrix = matrix
+		self.list_of_tweets = list_of_tweets
 		self.vect = vect
 		self.word_counts = word_counts
+
+		print word_counts[1]
 
 
 if __name__ == '__main__':
@@ -70,10 +77,10 @@ if __name__ == '__main__':
 	#model.create_conn_and_database()
 	model.data_to_docs()
 	model.tfidf()
-	with open('data/ngrams_data_dict.pkl', 'w') as f: 
-		pickle.dump(model.dict, f)
-	with open('data/ngrams_vectorizer.pkl', 'w') as f: 
-		pickle.dump(model.vect, f)
-	with open('data/ngrams_word_counts.pkl', 'w') as f: 
-		pickle.dump(model.word_counts, f)
+	# with open('data/ngrams_data_dict.pkl', 'w') as f: 
+	# 	pickle.dump(model.dict, f)
+	# with open('data/ngrams_vectorizer.pkl', 'w') as f: 
+	# 	pickle.dump(model.vect, f)
+	# with open('data/ngrams_word_counts.pkl', 'w') as f: 
+	# 	pickle.dump(model.word_counts, f)
 	

@@ -30,13 +30,16 @@ def process(raw_data):
 	data = []
 
 	for tweet in raw_data:
-		tweet_text = tweet.get('text').encode('utf8', 'ignore')
+		tweet_text = tweet.get('text').encode('utf8', 'ignore').strip('\n')
 		data.append(tweet_text)
 
-	return data
+	mega_tweet = " ".join(x for x in data)
+	mega_tweet1 = unicode(mega_tweet, errors='ignore')
+
+	return mega_tweet1
 
 def predict(data, vect, dict_data, word_counts): 
-	vector = vect.transform(data)
+	vector = vect.transform([data])
 	result = linear_kernel(vector, word_counts)
 	result_vector = result[0]
 
@@ -47,7 +50,7 @@ def predict(data, vect, dict_data, word_counts):
 	for idx in indices:
 		output.append(dict_data.items()[idx][0])
 
-	return output
+	return result, output
 
 if __name__ == '__main__':
 	sn = raw_input("Please enter a twitter handle: ")
@@ -59,6 +62,6 @@ if __name__ == '__main__':
 		vect = pickle.load(f)
 	with open('data/word_counts.pkl') as f: 
 		word_counts = pickle.load(f)
-	output = predict(data, vect, dict_data, word_counts)
+	result, output = predict(data, vect, dict_data, word_counts)
 	print output
 	

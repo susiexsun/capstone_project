@@ -29,8 +29,11 @@ class Model2(object):
 
 	def data_to_docs(self):
 		''' Turns data into a usable format for the TfidfVectorizer 
+		
 		INPUT: MongoDB data with 1 Mongo Document per tweet
-		OUTPUT: Updates self.dict with OrderedDict in useable format
+		
+		OUTPUT: Updates self.dict with OrderedDict. OrderedDict has 1 
+		key per person, and the text is 1 long string with all of the tweets.
 		'''
 
 		client = MongoClient()
@@ -57,6 +60,7 @@ class Model2(object):
 		for k, v in self.dict.iteritems(): 
 			matrix.append(v)
 
+
 		vect = CountVectorizer()
 		word_counts = vect.fit_transform(np.array(matrix))
 
@@ -67,7 +71,7 @@ class Model2(object):
 
 if __name__ == '__main__':
 	model2 = Model2()
-	model2.create_conn_and_database()
+	# model2.create_conn_and_database()
 	model2.data_to_docs()
 	model2.vectorize()
 	with open('data/count_vect_data_dict.pkl', 'w') as f: 

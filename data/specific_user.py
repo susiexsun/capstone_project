@@ -1,8 +1,6 @@
 import tweepy
 from tweepy import OAuthHandler
-from pymongo import MongoClient
 from flask import Flask, request, render_template
-import time
 app = Flask(__name__)
 
 
@@ -70,4 +68,5 @@ def check():
 if __name__ == '__main__':
 	check()
 	print not_scraped
+
 

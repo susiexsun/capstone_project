@@ -2,9 +2,11 @@ from sklearn.metrics.pairwise import linear_kernel
 import tweepy
 from tweepy import OAuthHandler
 import cPickle as pickle
-from model1 import Model1
+from tweetdoc_model import Tweetdoc
 import pymongo
 import sys
+import numpy as np
+from collections import Counter
 
 def scrape_info(sn): 
 
@@ -35,30 +37,34 @@ def process(raw_data):
 
 	return data
 
-def predict(data, vect, dict_data, word_counts): 
+def predict(data, vect, user_list, word_counts): 
 	vector = vect.transform(data)
-	result = linear_kernel(vector, word_counts)
-	result_vector = result[0]
-
-	indices = result_vector.argsort()[-11:-1][::-1]
+	result_matrix = linear_kernel(vector, word_counts)
 	
-	output = []
+	index_list = []
 
-	for idx in indices:
-		output.append(dict_data.items()[idx][0])
+	for row in result_matrix: 
+		indices = row.argsort()[-11:-1][::-1]
+		index_list.append()
 
-	return output
+	index_counter = Counter([idx for sublist in index_list for idx in sublist])
+
+	users_indexes = index_counter.most_common(10)
+
+	user_array = np.array(user_list)
+
+	return user_array[user_indexes]
 
 if __name__ == '__main__':
 	sn = raw_input("Please enter a twitter handle: ")
 	raw_data = scrape_info(sn)
 	data = process(raw_data)
-	with open('data/data_dict.pkl') as f: 
-		dict_data = pickle.load(f)
-	with open('data/vectorizer.pkl') as f: 
+	with open('data/tweetdoc_user_list.pkl') as f: 
+		user_list = pickle.load(f)
+	with open('data/tweetdoc_vectorizer.pkl') as f: 
 		vect = pickle.load(f)
-	with open('data/word_counts.pkl') as f: 
+	with open('data/tweetdoc_word_counts.pkl') as f: 
 		word_counts = pickle.load(f)
-	output = predict(data, vect, dict_data, word_counts)
+	output = predict(data, vect, user_list, word_counts)
 	print output
 	
