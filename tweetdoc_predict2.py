@@ -42,47 +42,48 @@ def predict(data, vect, user_list, tweet_list, word_counts, sn):
 	result_matrix = linear_kernel(vector, word_counts)
 	
 	indices_of_tweets = []
-	tweet_array = np.array(tweet_list)
-	user_array = np.array(user_list)
 
 	# For each tweet by the client, find the 30 most similar tweets
 	# This list may include tweets by the client
 	for row in result_matrix: 
-		indices = row.argsort()[-32:-2][::-1]
-		indices_of_tweets.append(indices)
+		indices = row.argsort()[:][::-1]
+		indices_of_tweets.append(indices[1:51])
 
-	
+	print indices_of_tweets
+
+	tweet_array = np.array(tweet_list)
 	tweets = tweet_array[indices_of_tweets]
 
 	print zip(data, tweets)
 
 
-	# # Return the person that tweeted each of the 50 most similar tweets
-	# persons_per_tweet = []
+	# Return the person that tweeted each of the 50 most similar tweets
+	user_array = np.array(user_list)
+	persons_per_tweet = []
 
-	# for row in indices_of_tweets: 
-	# 	persons_per_tweet.append(user_array[row])
+	for row in indices_of_tweets: 
+		persons_per_tweet.append(user_array[row])
 
-	# print persons_per_tweet
+	print persons_per_tweet
 
-	# # Count up how many times each person shows up. 
-	# # Same weighting is given to people who have many tweets similar to one client tweet
-	# # and a tweet that matches a high number of client tweets.
-	# persons_counter = Counter()
+	# Count up how many times each person shows up. 
+	# Same weighting is given to people who have many tweets similar to one client tweet
+	# and a tweet that matches a high number of client tweets.
+	persons_counter = Counter()
 
-	# for row in persons_per_tweet: 
-	# 	persons_counter.update(row)
+	for row in persons_per_tweet: 
+		persons_counter.update(row)
 
-	# print persons_counter
+	print persons_counter
 
-	# # return the top 25 people in this list
-	# top_people_and_count = persons_counter.most_common(25)
+	# return the top 25 people in this list
+	top_people_and_count = persons_counter.most_common(25)
 
-	# print top_people_and_count
+	print top_people_and_count
 
-	# top_people = [tup[0] for tup in top_people_and_count]
+	top_people = [tup[0] for tup in top_people_and_count]
 
-	# return top_people
+	return top_people
 
 if __name__ == '__main__':
 	sn = raw_input("Please enter a twitter handle: ")
