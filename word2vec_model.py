@@ -6,9 +6,6 @@ from pymongo import MongoClient
 from collections import OrderedDict, defaultdict
 
 
-# the corpus should be represented as a dictionary? 
-# input questions into word2vec as a list of tokenized words ['graph', 'minors', 'trees']
-
 class Word2Vec_Model(object): 
 	def __init__(self): 
 		self.dict = None
@@ -83,6 +80,7 @@ class Word2Vec_Model(object):
 
 
 	def create_corpus(self): 
+			# pass data in directly from database
 
 			dictionary = corpora.Dictionary(self.list_of_tweets)
 			self.dictionary = dictionary
