@@ -54,6 +54,7 @@ class Model1(object):
 		print doc_dict.items()[1]
 
 		self.dict = doc_dict
+		return self.dict
 
 
 	def tfidf(self): 
@@ -76,7 +77,7 @@ if __name__ == '__main__':
 	model = Model1()
 	#model.create_conn_and_database()
 	model.data_to_docs()
-	model.tfidf()
+	#model.tfidf()
 	# with open('data/ngrams_data_dict.pkl', 'w') as f: 
 	# 	pickle.dump(model.dict, f)
 	# with open('data/ngrams_vectorizer.pkl', 'w') as f: 

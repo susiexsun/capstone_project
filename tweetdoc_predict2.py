@@ -47,7 +47,7 @@ def predict(data, vect, user_list, tweet_list, word_counts, sn):
 	# This list may include tweets by the client
 	for row in result_matrix: 
 		indices = row.argsort()[:][::-1]
-		indices_of_tweets.append(indices[1:51])
+		indices_of_tweets.append(indices[2:51])
 
 	print indices_of_tweets
 
