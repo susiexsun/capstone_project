@@ -18,19 +18,19 @@ class Tweetdoc(object):
 
 		client = MongoClient()
 		twitter = client['twitter']
-		tweets = twitter['users']
+		tweets = twitter['english']
 		text_and_id = tweets.find({}, {'user.screen_name':1, 'text':1})
 
 
 		processed_data = client['processed_data']
-		tweetdoc = processed_data['tweetdoc']
+		tweetdoc = processed_data['english_tweetdoc']
 		tweetdoc.insert(text_and_id)
 
 
 	def tfidf(self): 
 		client = MongoClient()
 		processed_data = client['processed_data']
-		tweetdoc = processed_data['tweetdoc']
+		tweetdoc = processed_data['english_tweetdoc']
 
 		docs = tweetdoc.find({})
 		
@@ -56,14 +56,14 @@ class Tweetdoc(object):
 
 if __name__ == '__main__':
 	model = Tweetdoc()
-	#model.create_conn_and_database()
+	model.create_conn_and_database()
 	model.tfidf()
-	with open('data/tweetdoc_user_list.pkl', 'w') as f: 
+	with open('data/english_tweetdoc_user_list.pkl', 'w') as f: 
 		pickle.dump(model.user_list, f)
-	with open('data/tweetdoc_tweet_list.pkl', 'w') as f: 
+	with open('data/english_tweetdoc_tweet_list.pkl', 'w') as f: 
 		pickle.dump(model.tweet_list, f)
-	with open('data/tweetdoc_vectorizer.pkl', 'w') as f: 
+	with open('data/english_tweetdoc_vectorizer.pkl', 'w') as f: 
 		pickle.dump(model.vect, f)
-	with open('data/tweetdoc_word_counts.pkl', 'w') as f: 
+	with open('data/english_tweetdoc_word_counts.pkl', 'w') as f: 
 		pickle.dump(model.word_counts, f)
 	

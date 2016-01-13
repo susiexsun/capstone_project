@@ -37,7 +37,7 @@ def process(raw_data):
 
 	return data
 
-def predict(data, vect, user_list, tweet_list, word_counts, sn): 
+def predict(data, vect, user_list, tweet_list, word_counts): 
 	vector = vect.transform(data)
 	result_matrix = linear_kernel(vector, word_counts)
 	
@@ -49,13 +49,6 @@ def predict(data, vect, user_list, tweet_list, word_counts, sn):
 		indices = row.argsort()[:][::-1]
 		indices_of_tweets.append(indices[2:51])
 
-	print indices_of_tweets
-
-	tweet_array = np.array(tweet_list)
-	tweets = tweet_array[indices_of_tweets]
-
-	print zip(data, tweets)
-
 
 	# Return the person that tweeted each of the 50 most similar tweets
 	user_array = np.array(user_list)
@@ -63,8 +56,6 @@ def predict(data, vect, user_list, tweet_list, word_counts, sn):
 
 	for row in indices_of_tweets: 
 		persons_per_tweet.append(user_array[row])
-
-	print persons_per_tweet
 
 	# Count up how many times each person shows up. 
 	# Same weighting is given to people who have many tweets similar to one client tweet
@@ -74,28 +65,23 @@ def predict(data, vect, user_list, tweet_list, word_counts, sn):
 	for row in persons_per_tweet: 
 		persons_counter.update(row)
 
-	print persons_counter
-
 	# return the top 25 people in this list
 	top_people_and_count = persons_counter.most_common(25)
-
-	print top_people_and_count
 
 	top_people = [tup[0] for tup in top_people_and_count]
 
 	return top_people
 
 if __name__ == '__main__':
-	sn = raw_input("Please enter a twitter handle: ")
-	raw_data = scrape_info(sn)
+	raw_data = scrape_info('susiexsun')
 	data = process(raw_data)
-	with open('data/tweetdoc_user_list.pkl') as f: 
+	with open('data/english_tweetdoc_user_list.pkl') as f: 
 		user_list = pickle.load(f)
-	with open('data/tweetdoc_tweet_list.pkl') as f: 
+	with open('data/english_tweetdoc_tweet_list.pkl') as f: 
 		tweet_list = pickle.load(f)
-	with open('data/tweetdoc_vectorizer.pkl') as f: 
+	with open('data/english_tweetdoc_vectorizer.pkl') as f: 
 		vect = pickle.load(f)
-	with open('data/tweetdoc_word_counts.pkl') as f: 
+	with open('data/english_tweetdoc_word_counts.pkl') as f: 
 		word_counts = pickle.load(f)
-	output = predict(data, vect, user_list, tweet_list, word_counts, sn)
-	#print output
+	output = predict(data, vect, user_list, tweet_list, word_counts)
+	print output
