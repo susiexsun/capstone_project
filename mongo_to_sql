@@ -1,0 +1,14 @@
+import pymongo
+from pymongo import MongoClient()
+import psycopg2
+
+try:
+    conn = psycopg2.connect("dbname='twitter' user='postgres' host='/tmp'")
+except:
+    print "I am unable to connect to the database"
+
+cur = conn.cursor()
+
+cur.execute("CREATE TABLE tweets (id, user_id, tweet, created_at;")
+
+cur.execute("CREATE TABLE users (user_id, screen_name, following, followers, profile_desc;")

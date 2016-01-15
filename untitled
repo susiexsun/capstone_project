@@ -1,0 +1,30 @@
+import numpy as np
+from pymongo import MongoClient
+from collections import OrderedDict
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+import cPickle as pickle
+
+
+client = MongoClient()
+twitter = client['twitter']
+tweets = twitter['users']
+
+names = tweets.distinct('user.screen_name')
+ids = tweets.distinct('user.id')
+
+data = []
+for num in xrange(len(names)):
+	temp_dict = {} 
+	temp_dict['screen_name'] =  names[num]
+	temp_dict['id'] = ids[num]
+	data.append(temp_dict)
+
+print data[1]
+
+all_users = twitter['all_users']
+
+for d in data: 
+	all_users.save(d)
+
+	

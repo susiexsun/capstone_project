@@ -6,17 +6,18 @@ import sys
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 import numpy as np
+import cPickle as pickle
 
 # Access Twitter API
-consumer_key = "HXJfoPTVxH6Iqqzv4nY5SlYgO"
-consumer_secret = "7LfAfz2a0LmH4dH46X4mUXSH6RTVmiS9zE1kgcBkw5NPirEkJ1"
-access_token = "34633790-ENRADvdaiEsSEhudIrNRQrxZPrPcb4hMLPupf5seb"
-access_token_secret = "hCKKwx5FyzpspWvnVr1wv4sU7JHlUNwVdJPPFrcL34wT3"
+# consumer_key = "HXJfoPTVxH6Iqqzv4nY5SlYgO"
+# consumer_secret = "7LfAfz2a0LmH4dH46X4mUXSH6RTVmiS9zE1kgcBkw5NPirEkJ1"
+# access_token = "34633790-ENRADvdaiEsSEhudIrNRQrxZPrPcb4hMLPupf5seb"
+# access_token_secret = "hCKKwx5FyzpspWvnVr1wv4sU7JHlUNwVdJPPFrcL34wT3"
 
-auth = OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+# auth = OAuthHandler(consumer_key, consumer_secret)
+# auth.set_access_token(access_token, access_token_secret)
 
-api = tweepy.API(auth)
+# api = tweepy.API(auth)
 
 #Initialize Mongo Connection
 client = MongoClient()
@@ -26,77 +27,53 @@ users = twitter['users']
 def get_ids(sn): 
 	ids = []
 	for page in tweepy.Cursor(api.followers_ids, screen_name=sn).pages():
-	    try: 
-	    	ids.extend(page)
-	    except: 
-	    	print sys.exc_info()
-	return ids
-
-def get_data(sn): 
-	record = users.find_one({'user.screen_name': sn})
-	a_dict = {'abc': 123}
-
-	if type(record) != type(a_dict):
 		try: 
-			user_tweets = api.user_timeline(sn, count=20)
-			users.insert(user_tweets)
+			ids.extend(page)
 		except: 
 			print sys.exc_info()
-		
-		X_docs = []
-
-		for tweet in user_tweets:
-			tweet_text = tweet.text
-			X_docs.append(tweet_text)
-	else: 
-		docs = users.find({'user.screen_name': sn})
-		
-		X_docs = []
-
-		for doc in docs: 
-			tweet = doc.get('text').encode('utf8', 'ignore')
-			X_docs.append(tweet)
-
-	return X_docs
+	return ids
 
 def scrape_new_users(ids): 
+	# for one_id in ids: 
+	# 	try: 
+	# 		user_tweets = api.user_timeline(one_id, count=20)
+	# 		temp.insert(user_tweets)
+	# 	except: 
+	# 		print sys.exc_info()
+
 	tweet_list = []
 	user_ids = []
 	user_handles = []
 
 	for one_id in ids: 
-		record = users.find_one({'user.id': one_id})
-		a_dict = {'abc': 123}
-		if type(record) != type(a_dict):
-			try: 
-				user_tweets = api.user_timeline(one_id, count=20)
-				users.insert(user_tweets)
-				for doc in user_tweets: 
-					tweet = doc.text
-					user_id = doc.user.id
-					user_handle = doc.user.screen_name
-					tweet_list.append(tweet)
-					user_ids.append(user_id)
-					user_handles.append(user_handle)
-			except: 
-				print sys.exc_info()
-		else: 
-			docs = users.find({'user.id': one_id})
-			for doc in docs: 
-				tweet = doc.get('text').encode('utf8', 'ignore')
-				user_handle = doc.get('user').get('screen_name')
-				user_id = doc.get('user').get('id')
-				tweet_list.append(tweet)
-				user_ids.append(user_id)
-				user_handles.append(user_handle)
+		docs = users.find({'user.id': one_id})
+		for doc in docs: 
+			tweet = doc.get('text').encode('utf8', 'ignore')
+			user_handle = doc.get('user').get('screen_name')
+			print user_handle
+			user_id = doc.get('user').get('id')
+			tweet_list.append(tweet)
+			user_ids.append(user_id)
+			user_handles.append(user_handle)
 
 	return tweet_list, user_ids, user_handles
 
-def run_model(tweet_list): 
-	vect = TfidfVectorizer()
-	word_counts = vect.fit_transform(tweet_list)
+def get_X(sn): 
 
-	return vect, word_counts
+	# try:  
+	# 	user_tweets = api.user_timeline(sn, count=20)
+	# 	temp.insert(user_tweets)
+	# except: 
+	# 	print sys.exc_info()
+
+	docs = users.find({'user.screen_name': sn},{'user.screen_name':1, 'user.id':1, 'text':1})
+		
+	X_docs = []
+	for doc in docs: 
+		tweet = doc.get('text').encode('utf8', 'ignore')
+		X_docs.append(tweet)
+
+	return X_docs
 
 def predict(data, vect, user_handles, tweet_list, word_counts): 
 	vector = vect.transform(data)
@@ -139,8 +116,11 @@ def predict(data, vect, user_handles, tweet_list, word_counts):
 
 if __name__ == '__main__':
 	sn = 'susiexsun'
-	ids = get_ids(sn)
-	X_docs = get_data(sn)
+	# ids = get_ids(sn)
+	ids =  [4166064015, 272385085, 422388777, 35860235]
 	tweet_list, user_ids, user_handles = scrape_new_users(ids)
-	#vect, word_counts = run_model(tweet_list)
-	#top_people = predict(data, vect, user_handles, tweet_list, word_counts)data
+	print user_handles[:3]
+	X_docs = get_X(sn)
+	with open('data/tweetdoc_vectorizer.pkl') as f: 
+		vect = pickle.load(f)
+	top_people = predict(data, vect, user_handles, tweet_list, word_counts)
