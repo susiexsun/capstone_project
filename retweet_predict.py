@@ -1,11 +1,12 @@
 from sklearn.metrics.pairwise import linear_kernel
-import tweepy
 from pymongo import MongoClient
 import sys
 import numpy as np
-from collections import Counter
+from collections import Counter, defaultdict
 import tweepy
 from tweepy import OAuthHandler
+from retweet_model import run_model, most_retweets
+import cPickle as pickle
 
 def get_data(sn): 
 
@@ -18,24 +19,60 @@ def get_data(sn):
 	auth.set_access_token(access_token, access_token_secret)
 
 	api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
-	
-	try: 
-		user_tweets = api.user_timeline(sn, count=50)
-	except: 
-		print sys.exc_info()
+
+	client = MongoClient()
+	twitter = client['twitter']
+	new = twitter['new']
 
 	data = []
 
-	for tweet in user_tweets:
+	if new.find_one({'user.screen_name': sn}) is None:
+		print 'scraping: ', sn
+		user_tweets = api.user_timeline(sn, count=50)
+		new.insert(user_tweets)
+
+	docs = new.find({'user.screen_name': sn})
+	for tweet in docs:
 		tweet_text = tweet.get('text').encode('utf8', 'ignore')
 		data.append(tweet_text)
 
 	return data
 
 
-def predict(data, vect, user_list, tweet_list, word_counts): 
+def predict(data, vect, id_handle_dict, handle_tweet_dict, sn): 
 	vector = vect.transform(data)
-	result_matrix = linear_kernel(vector, word_counts)
+
+	# get list of the ids of the retweeted people
+	most_retweet_ids = run_model(sn)
+
+	client = MongoClient()
+	twitter = client['twitter']
+	new = twitter['new']
+
+	handle_tweet_dict = defaultdict(list)
+	id_handle_dict = defaultdict()
+
+	for an_id in most_retweet_ids:	 
+		docs = new.find({'user.id': an_id})
+		for doc in docs: 
+			tweet = doc.get('text').encode('utf8', 'ignore')
+			user_id = doc.get('user').get('id')
+			handle = doc.get('user').get('screen_name')
+			handle_tweet_dict[handle].append(tweet)
+			id_handle_dict[user_id] = handle
+
+
+	tweet_list = []
+	handle_list = []
+
+	for k, v in handle_tweet_dict.iteritems(): 
+		tweet_list.extend(v)
+		handle_list.extend([k]*len(v))
+
+	vector = vect.transform(data)
+	new_word_counts = vect.transform(tweet_list)
+
+	result_matrix = linear_kernel(vector, new_word_counts)
 	
 	indices_of_tweets = []
 
@@ -43,15 +80,15 @@ def predict(data, vect, user_list, tweet_list, word_counts):
 	# This list may include tweets by the client
 	for row in result_matrix: 
 		indices = row.argsort()[:][::-1]
-		indices_of_tweets.append(indices[2:51])
+		indices_of_tweets.append(indices[:31])
 
 
-	# Return the person that tweeted each of the 50 most similar tweets
-	user_array = np.array(user_list)
+	# Return the ids of persons that tweeted each of the 30 most similar tweets
+	handle_array = np.array(handle_list)
 	persons_per_tweet = []
 
 	for row in indices_of_tweets: 
-		persons_per_tweet.append(user_array[row])
+		persons_per_tweet.append(handle_array[row])
 
 	# Count up how many times each person shows up. 
 	# Same weighting is given to people who have many tweets similar to one client tweet
@@ -62,21 +99,24 @@ def predict(data, vect, user_list, tweet_list, word_counts):
 		persons_counter.update(row)
 
 	# return the top 25 people in this list
-	top_people_and_count = persons_counter.most_common(25)
+	top_people_and_count = persons_counter.most_common(10)
 
-	top_people = [tup[0] for tup in top_people_and_count]
+	top_people = [tup[0] for tup in top_people_and_count if tup[0] != sn]
 
 	return top_people
 
-if __name__ == '__main__':
-	raw_data = get_data(sn)
-	with open('data/retweet_user_list.pkl') as f: 
-		user_list = pickle.load(f)
-	with open('data/retweet_tweet_list.pkl') as f: 
-		tweet_list = pickle.load(f)
+
+# if __name__ == '__main__':
+	sn = 'susiexsun'
+	data = get_data(sn)
+	# with open('data/retweet_handle_tweet_dict.pkl') as f: 
+	# 	handle_tweet_dict = pickle.load(f)
+	# with open('data/retweet_tweet_list.pkl') as f: 
+	# 	tweet_list = pickle.load(f)
 	with open('data/retweet_vectorizer.pkl') as f: 
 		vect = pickle.load(f)
-	with open('data/retweet_word_counts.pkl') as f: 
-		word_counts = pickle.load(f)
-	output = predict(data, vect, user_list, tweet_list, word_counts)
-	print output
+	# with open('data/retweet_word_counts.pkl') as f: 
+	# 	word_counts = pickle.load(f)
+	# with open('data/retweet_id_handle_dict.pkl') as f:
+	# 	id_handle_dict = pickle.load(f)
+	output = predict(data, vect, id_handle_dict, handle_tweet_dict, sn)

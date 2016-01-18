@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+ 
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+ 
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+<body bgcolor = 'c0deed'>
+<table width="100%" cellpadding='10'>
+<tr>
+	<td width="50%";>
+	{% for item in tweet_output %}
+	<blockquote class="twitter-tweet"
+	  data-link-color="#55acee" lang="en">
+	<p lang="en"></p>
+	<a href={{item}}>
+	</a>
+	</blockquote>
+	{% endfor %}
+	</td>
+	<td width="50%" valign='top' text-align='left'>
+		<br>
+		<h3>Read more on Twitter</h3>
+		{% for key, value in handle_output.items() %}
+		<a href={{value}} target="_blank">{{key}}</a>
+		{% endfor %}
+	</td>
+</tr>
+</table>
+</body>
+
+</html>

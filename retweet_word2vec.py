@@ -1,16 +1,16 @@
+from gensim import corpora, models, similarities
 import numpy as np
 from pymongo import MongoClient
 from collections import OrderedDict, defaultdict
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
 import cPickle as pickle
 
 class Model1(object): 
 	def __init__(self): 
 		self.handle_tweet_dict = None
-		self.vect = None
-		self.word_counts = None
 		self.id_handle_dict = None
+		self.dictionary = None
+		self.corpus = None
+		self.model = None
 
 	def create_conn_and_database(self): 
 		''' Connects to MongoDB database and pulls data for model. 
@@ -40,26 +40,32 @@ class Model1(object):
 		processed_data = client['processed_data']
 		graph_model = processed_data['graph_model']
 
-		docs = graph_model.find()
+		docs = graph_model.find({})
 		handle_tweet_dict = defaultdict(list)
 		id_handle_dict = defaultdict(list)
 
 		for doc in docs: 
 			tweet = doc.get('text').encode('utf8', 'ignore')
 			user_id = doc.get('user').get('id')
-			handle = doc.get('user').get('screen_name')
+			handle = doc.get('user').get('screen_name').encode('utf8', 'ignore')
 			handle_tweet_dict[handle].append(tweet)
 			id_handle_dict[user_id] = handle
 
-		model_input = [x for sublist in handle_tweet_dict.values() for x in sublist]
-
-		vect = TfidfVectorizer()
-		word_counts = vect.fit_transform(model_input)
-
 		self.handle_tweet_dict = handle_tweet_dict
-		self.vect = vect
-		self.word_counts = word_counts
 		self.id_handle_dict = id_handle_dict
+
+		dictionary_input = [x for sublist in handle_tweet_dict.values() for x in sublist]
+
+		# vect = TfidfVectorizer()
+		# word_counts = vect.fit_transform(model_input)
+
+		dictionary = corpora.Dictionary(dictionary_input)
+		corpus = [dictionary.doc2bow(text) for text in dictionary]
+		self.corpus = corpus
+
+		lsi = models.LsiModel(corpus)
+		self.model = lsi
+		
 
 
 
@@ -67,13 +73,14 @@ if __name__ == '__main__':
 	model = Model1()
 	#model.create_conn_and_database()
 	model.run_model()
-	with open('data/retweet_handle_tweet_dict.pkl', 'w') as f: 
+	with open('data/retweet_word2vec_handle_tweet_dict.pkl', 'w') as f: 
 		pickle.dump(model.handle_tweet_dict, f)
-	with open('data/retweet_vectorizer.pkl', 'w') as f: 
-		pickle.dump(model.vect, f)
-	with open('data/retweet_word_counts.pkl', 'w') as f: 
-		pickle.dump(model.word_counts, f)
-	with open('data/retweet_id_handle_dict.pkl', 'w') as f: 
+	with open('data/retweet_word2vec_id_handle_dict.pkl', 'w') as f: 
 		pickle.dump(model.id_handle_dict, f)
+	with open('data/retweet_word2vec_dictionary.pkl', 'w') as f: 
+		pickle.dump(model.dictionary, f)
+	with open('data/retweet_word2vec_lsi.pkl', 'w') as f: 
+		pickle.dump(model.lsi, f)
+
 
 	

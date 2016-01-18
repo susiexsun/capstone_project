@@ -31,19 +31,23 @@ class Word2Vec_Model(object):
 		auth.set_access_token(access_token, access_token_secret)
 
 		api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
-		
-		try: 
-			user_tweets = api.user_timeline(sn, count=50)
-		except: 
-			print sys.exc_info()
+
+		client = MongoClient()
+		twitter = client['twitter']
+		new = twitter['new']
 
 		data = []
 
-		for tweet in user_tweets:
-				tweet_text = tweet.get('text').encode('utf8', 'ignore')
-				data.extend(tweet_text.lower().split())
+		if new.find_one({'user.screen_name': sn}) is None:
+			print 'scraping: ', sn
+			user_tweets = api.user_timeline(sn, count=50)
+			new.insert(user_tweets)
 
-		self.input = data
+		docs = new.find({'user.screen_name': sn})
+		for tweet in docs:
+			tweet_text = tweet.get('text').encode('utf8', 'ignore')
+			data.append(tweet_text)
+
 		return data
 
 	def process_data_for_corpus(self):
@@ -57,9 +61,9 @@ class Word2Vec_Model(object):
 
 			client = MongoClient()
 			processed_data = client['processed_data']
-			count_vect = processed_data['count_vect']
+			graph_model = processed_data['graph_model']
 
-			docs = count_vect.find({})
+			docs = graph_model.find({})
 			doc_dict = OrderedDict()
 
 			for doc in docs:
