@@ -39,7 +39,7 @@ def get_data(sn):
 	return data
 
 
-def predict(data, vect, id_handle_dict, handle_tweet_dict, sn): 
+def predict(data, vect, sn): 
 	vector = vect.transform(data)
 
 	# get list of the ids of the retweeted people
@@ -106,17 +106,9 @@ def predict(data, vect, id_handle_dict, handle_tweet_dict, sn):
 	return top_people
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 	sn = 'susiexsun'
 	data = get_data(sn)
-	# with open('data/retweet_handle_tweet_dict.pkl') as f: 
-	# 	handle_tweet_dict = pickle.load(f)
-	# with open('data/retweet_tweet_list.pkl') as f: 
-	# 	tweet_list = pickle.load(f)
 	with open('data/retweet_vectorizer.pkl') as f: 
 		vect = pickle.load(f)
-	# with open('data/retweet_word_counts.pkl') as f: 
-	# 	word_counts = pickle.load(f)
-	# with open('data/retweet_id_handle_dict.pkl') as f:
-	# 	id_handle_dict = pickle.load(f)
-	output = predict(data, vect, id_handle_dict, handle_tweet_dict, sn)
+	output = predict(data, vect, sn)

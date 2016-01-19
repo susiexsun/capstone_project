@@ -1,10 +1,9 @@
 import tweepy
 from tweepy import OAuthHandler
-from flask import Flask, request, render_template
-app = Flask(__name__)
+from pymongo import MongoClient
+import sys
 
 
-@app.route('/')
 def scrape_info(): 
 	consumer_key = "HXJfoPTVxH6Iqqzv4nY5SlYgO"
 	consumer_secret = "7LfAfz2a0LmH4dH46X4mUXSH6RTVmiS9zE1kgcBkw5NPirEkJ1"
@@ -18,22 +17,27 @@ def scrape_info():
 
 	client = MongoClient()
 	twitter = client['twitter']
-	users = twitter['users']
+	new = twitter['new']
 
-	scraped_Jan6 = ["susiexsun", "michaeljancsy", "neiltyson", "sknthla", "SebDery", "Chris_Said", \
-									"KevinSimler", "beardigsit", "tylercowen", "NinjaEconomics", "SummerRay", "slobear", \
-									"kennethlove", "chrisemoody", "sepeher125", "johngreen", "hankgreen", "ddd", "TimHarford", \
-									"robinhanson", "micahtredding", "johnmyleswhite", "fmanjoo", "mattyglesias", "TMFHousel", \
-									"pdmsero", "cfchabris", "russpoldrack", "tanayj", "ito", "felixbot", "beaucronin", "toby_n", \
-									"Snowden", 'felixsalmon', 'AlSaqqaf', "JPdeRuiter", "bbaskin", "Khanoisseur", "Upstreamism", \
-									"EricTopol", "cdixon", "rafat", "ashleymayer", "vijaypande", "bbaskin"]
+	# scraped_Jan6 = ["susiexsun", "michaeljancsy", "neiltyson", "sknthla", "SebDery", "Chris_Said", \
+	# 								"KevinSimler", "beardigsit", "tylercowen", "NinjaEconomics", "SummerRay", "slobear", \
+	# 								"kennethlove", "chrisemoody", "sepeher125", "johngreen", "hankgreen", "ddd", "TimHarford", \
+	# 								"robinhanson", "micahtredding", "johnmyleswhite", "fmanjoo", "mattyglesias", "TMFHousel", \
+	# 								"pdmsero", "cfchabris", "russpoldrack", "tanayj", "ito", "felixbot", "beaucronin", "toby_n", \
+	# 								"Snowden", 'felixsalmon', 'AlSaqqaf', "JPdeRuiter", "bbaskin", "Khanoisseur", "Upstreamism", \
+	# 								"EricTopol", "cdixon", "rafat", "ashleymayer", "vijaypande", "bbaskin"]
+
+	screen_names = ["louiefx"]
+
 
 	for sn in screen_names: 
 
 		try: 
 			user_tweets = api.user_timeline(sn, count=50)
-			users.insert(user_tweets)
+			print "scraping: ", sn
+			new.insert(user_tweets)
 		except: 
+			print sys.exc_info()
 			time.sleep(300)
 
 def check(): 
@@ -66,7 +70,6 @@ def check():
 
 
 if __name__ == '__main__':
-	check()
-	print not_scraped
+	 scrape_info()
 
 
