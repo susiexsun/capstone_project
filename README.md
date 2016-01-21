@@ -2,7 +2,7 @@
 
 Who-To-Follow is a recommender for high quality content on Twitter. 
 
-![Webapp Overview](http://s30.postimg.org/ucst5lr35/overview.jpg)
+![Webapp Overview](http://s9.postimg.org/5emdyfd4f/overview.jpg)
 
 ### Motivation
 
