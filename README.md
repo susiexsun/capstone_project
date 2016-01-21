@@ -47,3 +47,13 @@ This custom built algorithm is able to make intuitive and insightful recommendat
 * Refining the model: adding a Page-Rank like component for retweets 
 * Broader applications: Apply the algorithm to other taste-driven products with discovery problems, such as music, TV shows, podcasts. Given the complexity of these products, a Social Graph + Content Analysis machine learning algorithm may produce great recommendations.
 
+## Repo Structure
+
+## Data
+scrape_with_graph.py - Pulling Graph and Tweets from Twitter's User Timeline and Friend Ids using Tweepy
+twitter_streaming.py - Pulling Data from Twitter's streaming API using Tweepy's StreamListener
+twitter_user.py - Collecting user timelines using IDs seeded from Twitter Streaming
+
+
+
+
