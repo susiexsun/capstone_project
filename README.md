@@ -16,7 +16,7 @@ The algorithm is an ensemble methods that uses Graph Theory and NLP. It transver
 
 * Retweet Graph - in the TwitterSphere, a retweet is a strongest signal of quality. This is a way to reduce noise.
 
-![alt text](http://postimg.org/image/4x6y3wubn/ "Model Step 1")
+!(http://postimg.org/image/4x6y3wubn/)
 
 * Individual tweets as documents. Why?  People have diverse interests and to use all of their texts as one document would be treating them as one homogeneous entity. 
 
