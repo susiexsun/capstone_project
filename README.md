@@ -11,9 +11,6 @@ Twitter can either be an amazing learning resource or a cacophonous echo chamber
 * Noise - there are 500 million tweets a day on Twitter and a large part of it is non-content (e.g. conversations, self-promotion)
 * Quality - Quality is subjective and highly personal
 
-### The Data
-
-Tweets and social graphs were obtained from Twitter's REST API and stored in a MongoDB database.
 
 ### The Model
 
@@ -41,4 +38,6 @@ As you can see, his recommendations were closely associated to Data Science. He 
 
 From some preliminary user testing, 83% of people found Who To Follow to be preferable to Triadic Closure. 100% of people found it to be better than random. 
 
+
+## Conclusions
 
