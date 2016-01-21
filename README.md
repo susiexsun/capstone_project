@@ -39,7 +39,7 @@ From some preliminary user testing, 83% of people found Who To Follow to be pref
 
 ## Conclusions
 
-This custom built algorithm is able to make intuitive and insightful recommendations. The Graph structure using retweets is the secret sauce of this algorithm and an elegant way to cut through the noise on the Twitter Platform. 
+This custom built algorithm is able to make intuitive and insightful recommendations. The secret sauce here is the retweet Graph structure and an elegant way to cut through the noise on the Twitter Platform. 
 
 ### Possibilities for further work
 
