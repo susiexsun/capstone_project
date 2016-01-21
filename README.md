@@ -2,14 +2,13 @@
 
 Who-To-Follow is a recommender for high quality content on Twitter. 
 
+![Webapp Overview](http://s30.postimg.org/ucst5lr35/overview.jpg)
+
 ### Motivation
 
 Twitter can either be an amazing learning resource or a cacophonous echo chamber, depending on how you use it. I spent many hours manually searching for the right people to make the platform productive for my interests. I was curious what type of Machine Learning algorithm could filter a large amount of data to surface high quality, personalized content.
 
-### Obstacles
-
-* Noise - there are 500 million tweets a day on Twitter and a large part of it is non-content (e.g. conversations, self-promotion)
-* Quality - Quality is subjective and highly personal
+Who-To-Follow is a webapp where you input a Twitter handle and receive a list of people recommendations. 
 
 
 ### The Model
@@ -30,7 +29,7 @@ The algorithm is an ensemble methods that uses Graph Theory and NLP. Details on 
 
 ### Results
 
-The results were quite intuitive and insightful. Here is a sample output from Chris Moody - I enjoyed a Data Science talk he gave recently.
+Here is a sample output from Chris Moody - I enjoyed a Data Science talk he gave recently.
 
 ![Sample Output](http://s14.postimg.org/uxr1iyhhd/Sample_output.jpg)
 
@@ -38,6 +37,13 @@ As you can see, his recommendations were closely associated to Data Science. He 
 
 From some preliminary user testing, 83% of people found Who To Follow to be preferable to Triadic Closure. 100% of people found it to be better than random. 
 
-
 ## Conclusions
+
+This custom built algorithm is able to make intuitive and insightful recommendations. The Graph structure using retweets is the secret sauce of this algorithm and an elegant way to cut through the noise on the Twitter Platform. 
+
+### Possibilities for further work
+
+* More extensive user testing
+* Refining the model: adding a Page-Rank like component for retweets 
+* Broader applications: Apply the algorithm to other taste-driven products with discovery problems, such as music, TV shows, podcasts. Given the complexity of these products, a Social Graph + Content Analysis machine learning algorithm may produce great recommendations.
 
