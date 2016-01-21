@@ -49,10 +49,11 @@ This custom built algorithm is able to make intuitive and insightful recommendat
 
 ## Repo Structure
 
-## Data
-scrape_with_graph.py - Pulling Graph and Tweets from Twitter's User Timeline and Friend Ids using Tweepy
-twitter_streaming.py - Pulling Data from Twitter's streaming API using Tweepy's StreamListener
-twitter_user.py - Collecting user timelines using IDs seeded from Twitter Streaming
+##### Data
+* scrape_with_graph.py - Pulling Graph and Tweets from Twitter's User Timeline and Friend Ids using Tweepy
+* twitter_streaming.py - Pulling Data from Twitter's streaming API using Tweepy's StreamListener
+* twitter_user.py - Collecting user timelines using IDs seeded from Twitter Streaming
+* specific_user.py - Used for QA and troubleshooting. Scrapes and confirms specific people are in the database. 
 
 
 
