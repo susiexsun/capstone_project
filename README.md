@@ -49,11 +49,25 @@ This custom built algorithm is able to make intuitive and insightful recommendat
 
 ## Repo Structure
 
-##### Data
+* retweet_model.py - creates the retweet graph
+* retweet_predict.py - runs cosine similarity and the custom scoring method
+* retweet_vect.py - creates the TF-IDF model
+
+#### Data
 * scrape_with_graph.py - Pulling Graph and Tweets from Twitter's User Timeline and Friend Ids using Tweepy
 * twitter_streaming.py - Pulling Data from Twitter's streaming API using Tweepy's StreamListener
 * twitter_user.py - Collecting user timelines using IDs seeded from Twitter Streaming
 * specific_user.py - Used for QA and troubleshooting. Scrapes and confirms specific people are in the database. 
+
+#### Old Models
+Legacy code on the various models that were tested during the course of experimentation.
+
+#### Web_App
+* web_app.py - Runs the web_app using Flask and Jinga
+* Static - HTML pages that run the homepage and recommendations page
+* Templates - Templates from Bootstrap.
+
+
 
 
 
