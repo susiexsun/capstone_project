@@ -20,5 +20,8 @@ The algorithm is an ensemble methods that uses Graph Theory and NLP. It transver
 
 * Individual tweets as documents. Why?  People have diverse interests and to use all of their texts as one document would be treating them as one homogeneous entity. 
 
+![Model Step 2](http://www.newyork-wallpapers.com/user-content/uploads/wall/o/19/New-York-City-Skyline-1440x900-Wallpaper.jpg)
+![Model Step 2]{
+
 
 
