@@ -25,7 +25,7 @@ The algorithm is an ensemble methods that uses Graph Theory and NLP. Details on 
 
 * Individual tweets as documents. Why?  People have diverse interests and to use all of their texts as one document would be treating them as one homogeneous entity. 
 
-![Model Step 2](http://s14.postimg.org/uxr1iyhhd/Sample_output.jpg/)
+![Model Step 2](http://s10.postimg.org/5n1b1w4fd/Image_Step_2.jpg)
 
 * TF-IDF and cosine similarity. Why? To check for interest similarity. Given the brevity of tweets, this method returned fairly good results, though I am curious to test Word2Vec. 
 
