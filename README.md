@@ -35,7 +35,7 @@ Here is a sample output from Chris Moody - I enjoyed a Data Science talk he gave
 
 As you can see, his recommendations were closely associated to Data Science. He is only following 1 of the 3 recommendations, Samim. 
 
-From some preliminary user testing, 83% of people found Who To Follow to be preferable to Triadic Closure. 100% of people found it to be better than random. 
+From some preliminary user testing, <b>83% of people found Who To Follow to be preferable to Triadic Closure</b>. 100% of people found it to be better than random. 
 
 ## Conclusions
 
