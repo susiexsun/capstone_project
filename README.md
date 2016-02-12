@@ -4,6 +4,8 @@ Who-To-Follow is a recommender for high quality content on Twitter.
 
 ![Webapp Overview](http://s9.postimg.org/5emdyfd4f/overview.jpg)
 
+Working web app at http://susiexsun.com/whotofollow.html
+
 ### Motivation
 
 Twitter can either be an amazing learning resource or a cacophonous echo chamber, depending on how you use it. I spent many hours manually searching for the right people to make the platform productive for my interests. I was curious what type of Machine Learning algorithm could filter a large amount of data to surface high quality, personalized content.
